@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>レモンタイピング</title>
+  <style>
+    body {
+      background-image: url('umi.png');
+      background-size: cover;
+      background-position: center;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      color: rgb(255, 0, 0);
+    }
+    h1 {
+      font-size: 48px;
+      margin-top: 50px;
+    }
+    #startMessage {
+      font-size: 24px;
+      color: yellow;
+      margin-bottom: 20px;
+    }
+    #word {
+      font-size: 36px;
+      font-weight: bold;
+      color: red;
+      margin: 20px 0;
+    }
+    input {
+      font-size: 24px;
+      padding: 10px;
+      width: 300px;
+    }
+    .info {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>レモンタイピング</h1>
+  <div id="startMessage">スペースキーで開始！</div>
+  <div id="word">apple</div>
+  <input type="text" id="input" disabled />
+  <div class="info">スコア: <span id="score">0</span></div>
+  <div class="info">コンボ: <span id="combo">0</span></div>
+  <div class="info">残り時間: <span id="time">120</span> 秒</div>
+
+  <script>
+    const wordList = ["apple", "banana", "grape", "orange", "lemon", "melon", "peach", "cherry", "kiwi", "mango"];
+    const input = document.getElementById("input");
+    const word = document.getElementById("word");
+    const scoreDisplay = document.getElementById("score");
+    const comboDisplay = document.getElementById("combo");
+    const timeDisplay = document.getElementById("time");
+    const startMessage = document.getElementById("startMessage");
+
+    let currentIndex = 0;
+    let score = 0;
+    let combo = 0;
+    let time = 120;
+    let started = false;
+    let timer;
+
+    function startGame() {
+      score = 0;
+      combo = 0;
+      time = 120;
+      currentIndex = 0;
+      started = true;
+      input.disabled = false;
+      input.value = "";
+      input.focus();
+      word.textContent = wordList[currentIndex];
+      scoreDisplay.textContent = score;
+      comboDisplay.textContent = combo;
+      timeDisplay.textContent = time;
+      startMessage.textContent = "";
+
+      timer = setInterval(() => {
+        time--;
+        timeDisplay.textContent = time;
+        if (time <= 0) {
+          clearInterval(timer);
+          input.disabled = true;
+          started = false;
+          startMessage.textContent = "もう一度スペースキーで開始！";
+        }
+      }, 1000);
+    }
+
+    input.addEventListener("input", () => {
+      if (input.value === wordList[currentIndex]) {
+        score += 10;
+        combo++;
+        currentIndex = (currentIndex + 1) % wordList.length;
+        word.textContent = wordList[currentIndex];
+        input.value = "";
+        scoreDisplay.textContent = score;
+        comboDisplay.textContent = combo;
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && !started) {
+        startGame();
+      }
+    });
+  </script>
+</body>
+</html>
